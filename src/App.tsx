@@ -1,26 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// App.tsx
 
-function App() {
+import React, {useState} from 'react';
+import PDFUploader from './PDFUpload';
+import Chat from './Chat';
+import PdfViewer from './PDFViewer';
+
+const App: React.FC = () => {
+  const [fileObject, setFileObject] = useState('');
+  const [selectedText, setSelectedText] = useState('');
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="w-screen min-h-screen bg-gradient-to-r from-rose-100 to-teal-100">
+      <div>
+        <PDFUploader setFileObject={setFileObject}/>
+        <PdfViewer setSelectedText={setSelectedText} fileObject={fileObject}/>
+      </div>
     </div>
   );
-}
+};
 
 export default App;

@@ -1,0 +1,96 @@
+.pdfviewer {
+    box-sizing: border-box;
+    height: 100%;
+
+    /* Adjust this value as needed */
+    /* height: 100%;
+    
+  }
+ */
+}
+.pageCount{
+    position: relative;
+    width: 100%;
+}
+.pageCount > p {
+    float: left;
+    padding: 10px;
+}
+.pageCount > button {
+    float: right;
+    margin-top: 15px;
+    margin-right:5px;
+    padding: 10px;
+}
+.DisplayPDF{
+    height: 500px;
+    width: 100%;
+    padding-top: 10px;
+    overflow-y: scroll;
+    position: relative;
+
+}
+
+
+
+.chat {
+    width: 100%;
+    height:450px;
+    overflow-y: scroll;
+  }
+  
+.messages {
+    min-width: 10%;
+    max-width: 50%;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+.messages {
+    display: block; /* Allows the bubble to fit the content width */
+    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-left: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 18px; /* Rounded corners for bubble effect */
+    background-color: #e0e0e0; /* Light grey background for messages */
+    border: none;
+    word-wrap: break-word; /* Ensure long words do not overflow */
+  }
+  
+.chat_input{
+    border-radius: 8px;
+    bottom: 0;
+    position: fixed;
+    margin-bottom: 1%;
+    margin-top: 1%;
+    width: 22%;
+    margin-left:7%;
+    height: 7%;
+   
+}
+
+.chat_input > input{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    margin-bottom: 5%;
+    border: 1px solid #e0e0e0;
+}
+
+.chat_input > button {
+    width: 10%;
+    height: 100%;
+    border-radius: 50px;
+    margin-bottom: 4%;
+    border: 1px solid #e0e0e0;
+    float: right;
+    text-align: center;
+   
+}
+.chat_input > button > span{
+    align-items: center;
+}

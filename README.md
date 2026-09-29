@@ -1,46 +1,64 @@
-# Getting Started with Create React App
+# ChatPDF
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React and TypeScript front end for reading PDF files in the browser. You open a local PDF, go through it page by page, search the current page, and send a selected passage to a chat panel next to the document.
 
-## Available Scripts
+The chat panel is front end only for now. Messages are kept in the browser and no backend or language model is connected, so the Summarize button places the selected text in the chat panel instead of producing a summary.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Open a PDF from your computer. The file is not uploaded anywhere; it is loaded through a local object URL.
+- Sidebar with the name and size of the selected file.
+- Page rendering with react-pdf (pdf.js), a page counter and Previous / Next buttons.
+- Search box that highlights matches on the current page.
+- Selecting text in the document shows a Summarize button that sends the selection to the chat panel.
+- Chat panel where you can type messages and send them with Enter or the Send button.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Tech stack
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- React 18 and TypeScript, set up with Create React App (react-scripts 5)
+- react-pdf 7 for rendering PDFs
+- Tailwind CSS 3 with a shadcn/ui configuration
+- Jest and React Testing Library for tests
 
-### `npm test`
+## Project structure
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+public/                    HTML template, icons and web manifest
+src/
+  index.tsx                entry point
+  App.tsx                  three-column layout: file picker, viewer, chat
+  PDFUpload.tsx            file picker sidebar
+  PDFViewer.tsx            PDF rendering, paging, search and text selection
+  PDFViewer.css            viewer styles
+  Chat.tsx                 chat panel
+  Chat.test.tsx            tests for the chat panel
+  components/ui/input.tsx  shadcn/ui input component
+  lib/utils.ts             cn() helper for merging Tailwind classes
+tailwind.config.js         Tailwind theme
+components.json            shadcn/ui settings
+```
 
-### `npm run build`
+## Getting started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+You need Node.js 18 or newer and npm.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone https://github.com/Hamza-Tahirr/test-ali-final.git
+cd test-ali-final
+npm install
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The app runs at http://localhost:3000. No environment variables are needed.
 
-### `npm run eject`
+The pdf.js worker is loaded from cdnjs, so the viewer needs an internet connection to render pages.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Scripts
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `npm start` runs the development server
+- `npm test` runs the tests in watch mode
+- `npm run build` creates a production build in `build/`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## License
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is licensed under the MIT License. See [LICENSE](LICENSE).

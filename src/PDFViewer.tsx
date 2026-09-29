@@ -1,24 +1,21 @@
-import { pdfjs, Document, Page, TextLayerItem } from 'react-pdf';
+import { pdfjs, Document, Page } from 'react-pdf';
 import { useState, useCallback, useEffect } from 'react';
 import './PDFViewer.css';
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-// Define worker source for pdfjs
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-// Define type for the position of the popup
-interface PopupPosition {
-    left: number;
-    top: number;
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-// Function to highlight text based on pattern
-function highlightPattern(text: string, pattern: RegExp): string {
-    return text.replace(pattern, (value) => `<mark>${value}</mark>`);
+function highlightPattern(text: string, pattern: string): string {
+    if (!pattern) return text;
+    const regex = new RegExp(escapeRegExp(pattern), 'gi');
+    return text.replace(regex, (value) => `<mark>${value}</mark>`);
 }
 
-// Define props interface for PdfViewer component
 interface PdfViewerProps {
     onTextSelect: (text: string) => void;
     fileObject: string;
@@ -30,24 +27,13 @@ function PdfViewer({ onTextSelect, fileObject }: PdfViewerProps) {
     const [selectedText, setSelectedText] = useState<string>('');
     const [searchText, setSearchText] = useState<string>('');
     const [options, setOptions] = useState<boolean>(false);
-    const [popupPosition, setPopupPosition] = useState<PopupPosition | null>(null);
 
     useEffect(() => {
         const updateSelectedText = () => {
-            const selection = window.getSelection();
-            if (!selection || !selection.rangeCount) return;
-
-            const range = selection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-            const text = selection.toString();
-
+            const text = window.getSelection()?.toString();
             if (text) {
                 setSelectedText(text);
                 setOptions(true);
-                setPopupPosition({
-                    left: rect.left + window.scrollX + rect.width / 2,
-                    top: rect.top + window.scrollY - 5,
-                });
             }
         };
 
@@ -58,10 +44,10 @@ function PdfViewer({ onTextSelect, fileObject }: PdfViewerProps) {
             document.removeEventListener('mouseup', updateSelectedText);
             document.removeEventListener('touchend', updateSelectedText);
         };
-    }, [onTextSelect]);
+    }, []);
 
     const textRenderer = useCallback(
-        (textItem: TextLayerItem) => highlightPattern(textItem.str, new RegExp(searchText, 'gi')),
+        (textItem: { str: string }) => highlightPattern(textItem.str, searchText),
         [searchText]
     );
 
@@ -93,57 +79,59 @@ function PdfViewer({ onTextSelect, fileObject }: PdfViewerProps) {
 
     return (
         <div className='pdfviewer'>
-          <div className='pageCount'>
-              <p>
-                  Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
-              </p>
-              <button
-                  type="button"
-                  disabled={pageNumber <= 1}
-                  onClick={previousPage}
-                  
-              >
-                  Previous
-              </button>
-              <button
-                  type="button"
-                  disabled={pageNumber >= numPages}
-                  onClick={nextPage}
-                  
-  
-                  >
-                  Next
-              </button>
-          </div>
-    
-    
-          <div className='DisplayPDF'>
-              { options && (
-                  <div className='options'>
-                          <button
-                              type="button"
-                              onClick={handleTextSummarisation}>
-                              Summarize 🪄
-                          </button>
-                  </div>
-              )}
-              <Document
-                  className="doc"
-                  onLoadSuccess={onDocumentLoad}
-                  file={fileObject}
-              >
-                  <Page 
-                      renderAnnotationLayer={false}
-                      pageNumber={pageNumber} 
-                      width={550} 
-                      customTextRenderer={textRenderer}/> 
-  
-              </Document>
-              
-          </div>
-      </div>
-          
-      )
-    
-    }
-    export default PdfViewer;
+            <div className='pageCount'>
+                <p>
+                    Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
+                </p>
+                <input
+                    type="search"
+                    value={searchText}
+                    onChange={onChange}
+                    placeholder="Search this page"
+                />
+                <button
+                    type="button"
+                    disabled={pageNumber >= numPages}
+                    onClick={nextPage}
+                >
+                    Next
+                </button>
+                <button
+                    type="button"
+                    disabled={pageNumber <= 1}
+                    onClick={previousPage}
+                >
+                    Previous
+                </button>
+            </div>
+
+            <div className='DisplayPDF'>
+                {options && (
+                    <div className='options'>
+                        <button
+                            type="button"
+                            onClick={handleTextSummarisation}
+                            className="bg-blue-500 text-white px-4 py-2 rounded m-2"
+                        >
+                            Summarize
+                        </button>
+                    </div>
+                )}
+                <Document
+                    className="doc"
+                    onLoadSuccess={onDocumentLoad}
+                    file={fileObject}
+                >
+                    <Page
+                        renderAnnotationLayer={false}
+                        pageNumber={pageNumber}
+                        width={550}
+                        customTextRenderer={textRenderer}
+                    />
+                </Document>
+            </div>
+        </div>
+    );
+}
+
+export default PdfViewer;

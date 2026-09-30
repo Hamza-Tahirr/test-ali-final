@@ -10,10 +10,22 @@ function escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function escapeHtml(value: string): string {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// react-pdf inserts the returned string as HTML, so the page text is escaped first
 function highlightPattern(text: string, pattern: string): string {
-    if (!pattern) return text;
-    const regex = new RegExp(escapeRegExp(pattern), 'gi');
-    return text.replace(regex, (value) => `<mark>${value}</mark>`);
+    if (!pattern) return escapeHtml(text);
+    const regex = new RegExp(`(${escapeRegExp(pattern)})`, 'gi');
+    return text
+        .split(regex)
+        .map((part, index) => (index % 2 === 1 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part)))
+        .join('');
 }
 
 interface PdfViewerProps {
